@@ -25,7 +25,7 @@ public class UserController {
     @PostMapping("/user")
     User newUser(@RequestBody User newUser){
         return userRepository.save(newUser);
-    }
+    } //newuser = {username: samir,username, email, password:123}
 
     @GetMapping("/users")
     List<User> getAllUsers(){
@@ -43,28 +43,94 @@ public class UserController {
 
 
 
-    //chatgpt
 
+
+
+//    @PostMapping("/login")
+//    public ResponseEntity<String> loginUser(@RequestBody User loginUser) {
+//        Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
+//
+//        if (userOptional.isPresent()) {
+//            // User is authenticated, you can generate a JWT token or set a session here
+//            return ResponseEntity.ok("Login successful!");
+//
+//        } else {
+//            // Invalid credentials
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+//
+//        }
+//    }
+// loginuser-->username,name,password
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User loginUser) {
+    public ResponseEntity<User> loginUser(@RequestBody User loginUser) {
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
-
+// user--> username,password
         if (userOptional.isPresent()) {
             // User is authenticated, you can generate a JWT token or set a session here
-            return ResponseEntity.ok("Login successful!");
+            User authenticatedUser = userOptional.get();
+
+
+
+            authenticatedUser.setLogin(true); // Set login property to true
+            userRepository.save(authenticatedUser); // Save the updated user object back to the database
+            return ResponseEntity.ok(authenticatedUser); // Return the user object
         } else {
             // Invalid credentials
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
 
+
+
+
+
+
+//    @PostMapping("/login")
+//    public ResponseEntity<User> loginUser(@RequestBody User loginUser) {
+//        Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
 //
-//    @GetMapping("/user/{id}")
-//    public User getUserById(@PathVariable Long id) {
-//        Optional<User> userOptional = userRepository.findById(id);
-//        return userOptional.orElse(null); // Returns null if user not found
+//        if (userOptional.isPresent()) {
+//            User user = userOptional.get();
+//            user.setLogin(true);
+//
+//
+//
+//            // Save the updated user object back to the database
+//            userRepository.save(user);
+//
+//            return ResponseEntity.ok(user); // Return the user object without the password
+//        } else {
+//            // Invalid credentials
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+//        }
 //    }
+
+
+//        @PostMapping("/login")
+//    public ResponseEntity<User> loginUser(@RequestBody User loginUser) {
+//        Optional<User> student = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
+//
+//        if (student.isPresent()) {
+//
+//            userRepository.save(loginUser);
+//
+//            return ResponseEntity.ok(loginUser);
+//
+//        } else {
+//            // Invalid credentials
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+//        }
+//    }
+//
+
+
+    //
+    @GetMapping("/user/{id}")
+    public User getUserById(@PathVariable Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.orElse(null); // Returns null if user not found
+    }
 
 
 //    @PutMapping("/users/{id}")
@@ -87,5 +153,15 @@ public class UserController {
 
 
 
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return ResponseEntity.ok("User deleted successfully");
+        } else {
+            // User not found, return a 404 Not Found status code
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
 
 }
