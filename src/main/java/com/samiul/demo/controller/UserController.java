@@ -1,17 +1,18 @@
 package com.samiul.demo.controller;
 
 
-import com.samiul.demo.exception.UserNotFoundException;
 import com.samiul.demo.model.User;
 import com.samiul.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+// for OTP
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+//
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -19,6 +20,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+
 
 
 
@@ -32,6 +35,54 @@ public class UserController {
         return userRepository.findAll();
 
     }
+
+
+//    @PutMapping("/forget")
+////    public User getById(@RequestParam Long id,@RequestBody User newUser){
+////        newUser.setId(id);
+////        return userRepository.save(newUser);
+////    }
+
+//change password , before --> ("/forget")
+    @PutMapping("/changePass")
+    public ResponseEntity<User> updateUser(@RequestBody User newUser) {
+        Optional<User> userOptional = userRepository.findByUsernameAndPassword(newUser.getUsername(), newUser.getPassword());
+        System.out.println("Received request with username: " + newUser.getUsername());
+        System.out.println("Received request with oldPassword: " + newUser.getPassword());
+        System.out.println("Received request with newPassword: " + newUser.getNewPassword());
+        System.out.println("Received request with userOptional: " + userOptional);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setPassword(newUser.getNewPassword());
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @PutMapping("/forget")
+    public ResponseEntity<User> changePass(@RequestBody User newUser) {
+        Optional<User> userOptional = userRepository.findByUsernameAndMobileNo(newUser.getUsername(), newUser.getMobileNo());
+        System.out.println("Received request with username: " + newUser.getUsername());
+
+        System.out.println("Received request with newPassword: " + newUser.getNewPassword());
+        System.out.println("Received request with userOptional: " + userOptional);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setPassword(newUser.getNewPassword());
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+
+
+
 
 
 //    @GetMapping("/user/{id}")
@@ -61,7 +112,7 @@ public class UserController {
 //        }
 //    }
 // loginuser-->username,name,password
-
+// response Entity helps us to send the status.
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User loginUser) {
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
@@ -80,7 +131,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
-
 
 
 
@@ -163,5 +213,12 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
+
+
+
+
+
+    // Forget Password using OTP
+
 
 }
