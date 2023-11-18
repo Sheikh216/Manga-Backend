@@ -16,10 +16,37 @@ public class User {
 
     private String password;
 
+    private String newPassword;
+
+    private String mobileNo;
+
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
 
     private Boolean login = false;
 
     private Boolean admin = false;
+
+
+
+
+
+
+
+
 
 
     public Boolean getAdmin() {
@@ -78,4 +105,6 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
 }

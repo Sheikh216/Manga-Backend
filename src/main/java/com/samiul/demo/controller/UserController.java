@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+// for OTP
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -32,11 +34,93 @@ public class UserController {
     }
 
 
+//    @PutMapping("/forget")
+////    public User getById(@RequestParam Long id,@RequestBody User newUser){
+////        newUser.setId(id);
+////        return userRepository.save(newUser);
+////    }
+
+//change password , before --> ("/forget")
+    @PutMapping("/changePass")
+    public ResponseEntity<User> updateUser(@RequestBody User newUser) {
+        Optional<User> userOptional = userRepository.findByUsernameAndPassword(newUser.getUsername(), newUser.getPassword());
+        System.out.println("Received request with username: " + newUser.getUsername());
+        System.out.println("Received request with MobileNo: " + newUser.getMobileNo());
+        System.out.println("Received request with newPassword: " + newUser.getNewPassword());
+        System.out.println("Received request with userOptional: " + userOptional);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setPassword(newUser.getNewPassword());
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @PutMapping("/forget")
+    public ResponseEntity<User> changePass(@RequestBody User newUser) {
+        Optional<User> userOptional = userRepository.findByUsernameAndMobileNo(newUser.getUsername(), newUser.getMobileNo());
+        System.out.println("Received request with username: " + newUser.getUsername());
+        System.out.println("Received request with MobileNo: " + newUser.getMobileNo());
+        System.out.println("Received request with newPassword: " + newUser.getNewPassword());
+        System.out.println("Received request with userOptional: " + userOptional);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setPassword(newUser.getNewPassword());
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+
+
+
+
+
+//    @GetMapping("/user/{id}")
+//    public User getUserById(@PathVariable Long id) {
+//        return userRepository.findById(id)
+//                .orElseThrow(() -> new UserNotFoundException(id));
+//    }
+
+
+
+
+
+
+
+//    @PostMapping("/login")
+//    public ResponseEntity<String> loginUser(@RequestBody User loginUser) {
+//        Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
+//
+//        if (userOptional.isPresent()) {
+//            // User is authenticated, you can generate a JWT token or set a session here
+//            return ResponseEntity.ok("Login successful!");
+//
+//        } else {
+//            // Invalid credentials
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+//
+//        }
+//    }
+// loginuser-->username,name,password
+// response Entity helps us to send the status.
+
+
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User loginUser) {
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
         if (userOptional.isPresent()) {
+
+
+
             // User is authenticated, you can generate a JWT token or set a session here
+
             User authenticatedUser = userOptional.get();
             authenticatedUser.setLogin(true); // Set login property to true
             userRepository.save(authenticatedUser); // Save the updated user object back to the database
@@ -46,6 +130,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
+
+
+
+
+
 
 
 //    @PostMapping("/login")
@@ -115,5 +204,12 @@ public class UserController {
         return "User with " + id + " has been deleted successfully.";
 
     }
+
+
+
+
+
+    // Forget Password using OTP
+
 
 }
