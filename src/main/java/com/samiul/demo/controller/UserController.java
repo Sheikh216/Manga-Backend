@@ -1,6 +1,7 @@
 package com.samiul.demo.controller;
 
 
+import com.samiul.demo.exception.UserNotFoundException;
 import com.samiul.demo.model.User;
 import com.samiul.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 // for OTP
 
-//
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -22,16 +22,13 @@ public class UserController {
     private UserRepository userRepository;
 
 
-
-
-
     @PostMapping("/user")
-    User newUser(@RequestBody User newUser){
+    User newUser(@RequestBody User newUser) {
         return userRepository.save(newUser);
     } //newuser = {username: samir,username, email, password:123}
 
     @GetMapping("/users")
-    List<User> getAllUsers(){
+    List<User> getAllUsers() {
         return userRepository.findAll();
 
     }
@@ -116,13 +113,9 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User loginUser) {
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
-// user--> username,password
         if (userOptional.isPresent()) {
 
             User authenticatedUser = userOptional.get();
-
-
-
             authenticatedUser.setLogin(true); // Set login property to true
             userRepository.save(authenticatedUser); // Save the updated user object back to the database
             return ResponseEntity.ok(authenticatedUser); // Return the user object
@@ -182,36 +175,26 @@ public class UserController {
         return userOptional.orElse(null); // Returns null if user not found
     }
 
-
-//    @PutMapping("/users/{id}")
-//    public User updateUser(@RequestBody User newUser, @PathVariable Long id) {
-//        return userRepository.findById(id)
-//                .map(user -> {
-//                    user.setUsername(newUser.getUsername());
-//                    user.setName(newUser.getName());
-//                    user.setEmail(newUser.getEmail());
-//                    // If you have other fields to update, add them here
-//                    return userRepository.save(user);
-//                })
-//                .orElseGet(() -> {
-//                    // Handle the case where the user with the given ID is not found
-//                    newUser.setId(id);
-//                    return userRepository.save(newUser);
-//                });
-//    }
-
-
+    @PutMapping("/users/{id}")
+    User updateUser(@RequestBody User newUser, @PathVariable Long id) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setUsername(newUser.getUsername());
+                    user.setName(newUser.getName());
+                    user.setEmail(newUser.getEmail());
+                    return userRepository.save(user);
+                }).orElseThrow(() -> new UserNotFoundException(id));
+    }
 
 
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            return ResponseEntity.ok("User deleted successfully");
-        } else {
-            // User not found, return a 404 Not Found status code
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    String deleteuser(@PathVariable Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
         }
+        userRepository.deleteById(id);
+        return "User with " + id + " has been deleted successfully.";
+
     }
 
 
