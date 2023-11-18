@@ -48,7 +48,7 @@ public class UserController {
     public ResponseEntity<User> updateUser(@RequestBody User newUser) {
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(newUser.getUsername(), newUser.getPassword());
         System.out.println("Received request with username: " + newUser.getUsername());
-        System.out.println("Received request with oldPassword: " + newUser.getPassword());
+        System.out.println("Received request with MobileNo: " + newUser.getMobileNo());
         System.out.println("Received request with newPassword: " + newUser.getNewPassword());
         System.out.println("Received request with userOptional: " + userOptional);
 
@@ -66,7 +66,7 @@ public class UserController {
     public ResponseEntity<User> changePass(@RequestBody User newUser) {
         Optional<User> userOptional = userRepository.findByUsernameAndMobileNo(newUser.getUsername(), newUser.getMobileNo());
         System.out.println("Received request with username: " + newUser.getUsername());
-
+        System.out.println("Received request with MobileNo: " + newUser.getMobileNo());
         System.out.println("Received request with newPassword: " + newUser.getNewPassword());
         System.out.println("Received request with userOptional: " + userOptional);
 
@@ -118,7 +118,7 @@ public class UserController {
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
 // user--> username,password
         if (userOptional.isPresent()) {
-            // User is authenticated, you can generate a JWT token or set a session here
+
             User authenticatedUser = userOptional.get();
 
 
