@@ -110,10 +110,16 @@ public class UserController {
 //    }
 // loginuser-->username,name,password
 // response Entity helps us to send the status.
+
+
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User loginUser) {
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
         if (userOptional.isPresent()) {
+
+
+
+            // User is authenticated, you can generate a JWT token or set a session here
 
             User authenticatedUser = userOptional.get();
             authenticatedUser.setLogin(true); // Set login property to true
@@ -124,6 +130,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
+
+
 
 
 
