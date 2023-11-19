@@ -115,8 +115,15 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User loginUser) {
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
+        System.out.println("Received request with username: " + loginUser.getUsername());
+        System.out.println("Received request with MobileNo: " + loginUser.getMobileNo());
+        System.out.println("Received request with newPassword: " + loginUser.getPassword());
+        System.out.println("Received request with userOptional: " + userOptional);
         if (userOptional.isPresent()) {
-
+            System.out.println("Received request with username: " + loginUser.getUsername());
+            System.out.println("Received request with MobileNo: " + loginUser.getMobileNo());
+            System.out.println("Received request with newPassword: " + loginUser.getPassword());
+            System.out.println("Received request with userOptional: " + userOptional);
 
 
             // User is authenticated, you can generate a JWT token or set a session here
