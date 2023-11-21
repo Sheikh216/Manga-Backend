@@ -213,7 +213,21 @@ public class UserController {
     }
 
 
+    @PutMapping("/newAdmin/{id}")
+    public ResponseEntity<User> updateAdmin(@PathVariable Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        System.out.print(userOptional);
+        if (userOptional.isPresent()) {
+            User newAdmin = userOptional.get();
+            newAdmin.setAdmin(true);
+            userRepository.save(newAdmin);
+            return ResponseEntity.ok(newAdmin);
 
+        } else {
+            return ResponseEntity.notFound().build();
+
+        }
+    }
 
 
     // Forget Password using OTP
