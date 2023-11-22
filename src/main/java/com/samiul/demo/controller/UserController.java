@@ -213,6 +213,8 @@ public class UserController {
     }
 
 
+    //SET ADMIN
+
     @PutMapping("/newAdmin/{id}")
     public ResponseEntity<User> updateAdmin(@PathVariable Long id) {
         Optional<User> userOptional = userRepository.findById(id);
@@ -229,8 +231,52 @@ public class UserController {
         }
     }
 
+    //PRO
+
+    @PutMapping("/PRO")
+    public ResponseEntity<User> updatePRO(@RequestBody User newUser) {
+        Optional<User> userOptional = userRepository.findByUsernameAndPassword(newUser.getUsername(), newUser.getPassword());
+        System.out.print(userOptional);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setPremier(true);
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+
+        } else {
+            return ResponseEntity.notFound().build();
+
+        }
+    }
+
+
+//    @PostMapping("/user/{userId}/cart/add/{productId}")
+//    public ResponseEntity<String> addToCart(@PathVariable Long userId, @PathVariable Long productId) {
+//        Optional<User> userOptional = userRepository.findById(userId);
+//
+//        if (userOptional.isPresent()) {
+//            User user = userOptional.get();
+//            List<Long> cart = user.getCart();
+//
+//            // Check if the product ID already exists in the user's cart
+//            if (cart.contains(productId)) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product already exists in the user's cart");
+//            }
+//
+//            // Add the new product ID to the cart
+//            cart.add(productId);
+//            user.setCart(cart);
+//
+//            userRepository.save(user);
+//
+//            return ResponseEntity.ok("Product added to cart successfully");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+//        }
+//    }
+}
+
 
     // Forget Password using OTP
 
 
-}

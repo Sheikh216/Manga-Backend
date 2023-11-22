@@ -1,8 +1,10 @@
 package com.samiul.demo.model;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.List;
 
 @Entity
 public class User {
@@ -18,7 +20,20 @@ public class User {
 
     private String newPassword;
 
+
+
     private String mobileNo;
+
+    private Boolean Premier;
+
+
+    public Boolean getPremier() {
+        return Premier;
+    }
+
+    public void setPremier(Boolean premier) {
+        Premier = premier;
+    }
 
     public String getMobileNo() {
         return mobileNo;
@@ -44,8 +59,18 @@ public class User {
 
 
 
+//    @ElementCollection
+//    private List<Long> cart; // List of product IDs in the cart
 
-
+    // Getters and setters for the cart field
+//    public List<Long> getCart() {
+//        return cart;
+//    }
+//
+//    public void setCart(List<Long> cart) {
+//        this.cart = cart;
+//    }
+//
 
 
 

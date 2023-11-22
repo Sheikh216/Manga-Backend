@@ -21,6 +21,17 @@ public class products {
     private int quantity;
     private String image;
 
+    private Boolean premier = false;
+
+
+    public Boolean getPremier() {
+        return premier;
+    }
+
+    public void setPremier(Boolean premier) {
+        this.premier = premier;
+    }
+
     public String getImage() {
         return image;
     }
