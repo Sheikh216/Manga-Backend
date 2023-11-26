@@ -23,6 +23,15 @@ public class products {
 
     private Boolean premier = false;
 
+    private int view = 0;
+
+    public int getView() {
+        return view;
+    }
+
+    public void setView(int view) {
+        this.view = view;
+    }
 
     public Boolean getPremier() {
         return premier;

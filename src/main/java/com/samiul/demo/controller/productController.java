@@ -58,4 +58,12 @@ public class productController {
         return productRepository.save(product);
     }
 
+    @PutMapping ("/updateView/{id}")
+    public products updateProductView(@PathVariable long id){
+        products product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        int currentViews = product.getView();
+        product.setView(currentViews + 1);
+        return productRepository.save(product);
+    }
+
 }
