@@ -45,4 +45,17 @@ public class productController {
         productRepository.deleteById(id);
     }
 
+
+    @PutMapping("/{productId}/decrement")
+    public products decrementProductQuantity(@PathVariable Long productId, @RequestParam int quantity) {
+        products product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+
+        int currentQuantity = product.getQuantity();
+        int updatedQuantity = currentQuantity - quantity;
+
+
+        product.setQuantity(updatedQuantity);
+        return productRepository.save(product);
+    }
+
 }
