@@ -29,7 +29,7 @@ public class RatingController {
 
     @PostMapping
     public ResponseEntity<ProductRating> newProduct(@RequestBody @Validated RatingRequest request){
-        User user = this.userRepository.findByEmail(request.getUserName())
+        User user = this.userRepository.findByUsername(request.getUserName())
                 .orElseThrow();
         products products = this.productRepository.findById(request.getProductId())
                 .orElseThrow();
@@ -50,6 +50,12 @@ public class RatingController {
     @GetMapping("/user/{userEmail}")
     @Transactional
     public ResponseEntity<List<ProductRating>> getByUser(@PathVariable String userEmail){
-        return ResponseEntity.ok(this.ratingRepository.findByUser(userEmail));
+        return ResponseEntity.ok(this.ratingRepository.findByUserName(userEmail));
+    }
+
+    @GetMapping("{id}")
+    @Transactional
+    public ResponseEntity<List<ProductRating>> getAll(@PathVariable Long id) {
+        return ResponseEntity.ok(this.ratingRepository.findByProductId(id));
     }
 }
