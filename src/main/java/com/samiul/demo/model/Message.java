@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 @Entity
-public class FAQ {
+public class Message {
 
     @Id
     @GeneratedValue
